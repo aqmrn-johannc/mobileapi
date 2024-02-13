@@ -10,10 +10,10 @@
             $this->con = $db->connect(); 
         }
 
-        public function createUser($email, $password, $name, $studnumber){
+        public function createUser($email, $password, $name, $studnumber, $course, $year){
            if(!$this->isEmailExist($email)){
-                $stmt = $this->con->prepare("INSERT INTO users (email, password, name, studnumber) VALUES (?, ?, ?, ?)");
-                $stmt->bind_param("ssss", $email, $password, $name, $studnumber);
+                $stmt = $this->con->prepare("INSERT INTO users (email, password, name, studnumber, course, year) VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("ssssss", $email, $password, $name, $studnumber, $course, $year);
                 if($stmt->execute()){
                     return USER_CREATED; 
                 }else{

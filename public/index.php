@@ -28,7 +28,7 @@ $app->add(new Tuupola\Middleware\HttpBasicAuthentication([
 */
 $app->post('/createuser', function(Request $request, Response $response){
 
-    if(!haveEmptyParameters(array('email', 'password', 'name', 'studnumber'), $request, $response)){
+    if(!haveEmptyParameters(array('email', 'password', 'name', 'studnumber', 'course', 'year'), $request, $response)){
 
         $request_data = $request->getParsedBody(); 
 
@@ -36,12 +36,14 @@ $app->post('/createuser', function(Request $request, Response $response){
         $password = $request_data['password'];
         $name = $request_data['name'];
         $studnumber = $request_data['studnumber']; 
+        $course = $request_data['course']; 
+        $year = $request_data['year']; 
 
         $hash_password = password_hash($password, PASSWORD_DEFAULT);
 
         $db = new DbOperations; 
 
-        $result = $db->createUser($email, $hash_password, $name, $studnumber);
+        $result = $db->createUser($email, $hash_password, $name, $studnumber, $course, $year);
         
         if($result == USER_CREATED){
 
