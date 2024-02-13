@@ -86,6 +86,64 @@ $app->post('/createuser', function(Request $request, Response $response){
         ->withStatus(422);    
 });
 
+$app->post('/createteacher', function(Request $request, Response $response){
+
+    if(!haveEmptyParameters(array('email', 'password', 'name', 'department'), $request, $response)){
+
+        $request_data = $request->getParsedBody(); 
+
+        $email = $request_data['email'];
+        $password = $request_data['password'];
+        $name = $request_data['name'];
+        $department = $request_data['department']; 
+        $hash_password = password_hash($password, PASSWORD_DEFAULT);
+
+        $db = new DbOperations; 
+
+        $result = $db->createTeacher($email, $hash_password, $name, $department);
+        
+        if($result == USER_CREATED){
+
+            $message = array(); 
+            $message['error'] = false; 
+            $message['message'] = 'User created successfully';
+
+            $response->write(json_encode($message));
+
+            return $response
+                        ->withHeader('Content-type', 'application/json')
+                        ->withStatus(201);
+
+        }else if($result == USER_FAILURE){
+
+            $message = array(); 
+            $message['error'] = true; 
+            $message['message'] = 'Some error occurred';
+
+            $response->write(json_encode($message));
+
+            return $response
+                        ->withHeader('Content-type', 'application/json')
+                        ->withStatus(422);    
+
+        }else if($result == USER_EXISTS){
+            $message = array(); 
+            $message['error'] = true; 
+            $message['message'] = 'User Already Exists';
+
+            $response->write(json_encode($message));
+
+            return $response
+                        ->withHeader('Content-type', 'application/json')
+                        ->withStatus(422);    
+        }
+    }
+    return $response
+        ->withHeader('Content-type', 'application/json')
+        ->withStatus(422);    
+});
+
+
 $app->post('/userlogin', function(Request $request, Response $response){
 
     if(!haveEmptyParameters(array('email', 'password'), $request, $response)){

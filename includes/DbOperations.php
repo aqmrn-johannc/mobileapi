@@ -23,6 +23,19 @@
            return USER_EXISTS; 
         }
 
+        public function createTeacher($email, $password, $name, $department){
+            if(!$this->isEmailExist($email)){
+                 $stmt = $this->con->prepare("INSERT INTO teachers (email, password, name, department) VALUES (?, ?, ?, ?)");
+                 $stmt->bind_param("ssss", $email, $password, $name, $department);
+                 if($stmt->execute()){
+                     return USER_CREATED; 
+                 }else{
+                     return USER_FAILURE;
+                 }
+            }
+            return USER_EXISTS; 
+         }
+
         public function userLogin($email, $password){
             if($this->isEmailExist($email)){
                 $hashed_password = $this->getUsersPasswordByEmail($email); 
